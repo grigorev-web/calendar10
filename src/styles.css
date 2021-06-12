@@ -1,0 +1,43 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.DayPicker-Day {
+  border-radius: unset;
+}
+
+.DayPicker-Day--highlighted:not(.DayPicker-Day--outside) {
+  color: black;
+  font-weight: bold;
+  color: black !important;
+  background: #ffe7c9;
+
+  border-radius: 26%;
+}
+.Range
+  .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+  background-color: #f0f8ff;
+  color: #4a90e2;
+}
+
+.DayPicker-Day--start:not(.DayPicker-Day--outside) {
+  background: #88bfff;
+  border-radius: 25px 0 0 25px;
+  font-weight: bold;
+}
+
+.DayPicker-Day--end:not(.DayPicker-Day--outside) {
+  background: #88bfff;
+  border-radius: 0 25px 25px 0;
+  font-weight: bold;
+}
+.DayPicker-Day--weekends {
+  color: #ff9494;
+}
+.DayPicker-Day
+  DayPicker-Day--weekends
+  DayPicker-Day--start
+  DayPicker-Day--selected
+  DayPicker-Day--today {
+  background: #cadef1;
+}
