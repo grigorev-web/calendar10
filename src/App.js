@@ -35,10 +35,13 @@ function App() {
 
   function getInitialState() {
     return {
-      range: { from: null, to: null },
-      enteredTo: null,
+      range: {
+        from: new Date(new Date().setHours(0)),
+        to: new Date(new Date().setDate(new Date().getDate() + 31))
+      },
+      enteredTo: new Date(new Date().setDate(new Date().getDate() + 31)),
       events: [],
-      select: { type: "", period: "" }
+      select: { type: "", period: "next-month" }
     };
   }
   function isSelectingFirstDay(from, to, day) {
@@ -240,6 +243,22 @@ function App() {
         }));
         break;
       //////////////////////
+
+      case "last-half-year":
+        setState((prevState) => ({
+          ...prevState,
+          range: {
+            from: new Date(new Date().setDate(new Date().getDate() - 182)),
+            to: new Date(new Date().setHours(23, 59))
+          },
+          select: {
+            ...prevState,
+            period: event.target.value
+          },
+          enteredTo: new Date()
+        }));
+        break;
+      //////////////////////
       case "last-year":
         setState((prevState) => ({
           ...prevState,
@@ -295,7 +314,7 @@ function App() {
   Object.entries(state.events).map(([k, obj], key) => {
     let ev = new Date(obj.date);
     if (
-      (ev > state.range.from && ev < state.range.to) ||
+      ((ev) => state.range.from && ev < state.range.to) ||
       state.range.from == null
     ) {
       events.push(obj);
@@ -356,8 +375,13 @@ function App() {
           return 1;
       }
     })
+    .sort(function (a, b) {
+      var dateA = new Date(a.date),
+        dateB = new Date(b.date);
+      return dateA - dateB; //сортировка по возрастающей дате
+    })
     .reverse();
-  //console.log("events", events);
+  console.log("events", events);
   let listEvents = events.map((v, key) => <EventDiv key={key} event={v} />);
   //console.log(state);
   return (
@@ -386,14 +410,15 @@ function App() {
 
           <select value={state.select.period} onChange={handleSelectPeriod}>
             <option value="all-period">За все время</option>
-            <option value="next-week">На неделю</option>
-            <option value="next-month">На месяц</option>
-            <option value="next-half-year">На полгода</option>
-            <option value="next-year">На год</option>
+            <option value="next-week">На неделю вперед</option>
+            <option value="next-month">На месяц вперед</option>
+            <option value="next-half-year">На полгода вперед</option>
+            <option value="next-year">На год вперед</option>
 
-            <option value="last-week">Прошедшая неделя</option>
-            <option value="last-month">Прошедший месяц</option>
-            <option value="last-year">Прошедший год</option>
+            <option value="last-week">За прошлую неделю</option>
+            <option value="last-month">За прошлый месяц</option>
+            <option value="last-half-year">За прошлые полгода</option>
+            <option value="last-year">За прошлый год</option>
           </select>
         </div>
         {/* !range.from && !range.to && "Please select the first day." */}
