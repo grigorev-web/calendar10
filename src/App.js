@@ -383,6 +383,7 @@ function App() {
     .reverse();
   console.log("events", events);
   let listEvents = events.map((v, key) => <EventDiv key={key} event={v} />);
+
   //console.log(state);
   return (
     <div>

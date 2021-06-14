@@ -40,9 +40,7 @@ export default function EventDiv(props) {
         >
           {props.event.title}{" "}
         </a>
-        <div className="post__description">
-          {props.event.short_description}(" ")
-        </div>
+        <div className="post__description">{props.event.short_description}</div>
         <div className="post__date">
           <BsClock />
           <span className="post__time">{props.event.date} </span>
