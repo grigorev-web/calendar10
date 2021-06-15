@@ -314,7 +314,7 @@ function App() {
   Object.entries(state.events).map(([k, obj], key) => {
     let ev = new Date(obj.date);
     if (
-      ((ev) => state.range.from && ev < state.range.to) ||
+      (ev > state.range.from && ev < state.range.to) ||
       state.range.from == null
     ) {
       events.push(obj);
