@@ -22,9 +22,15 @@ function App() {
       .then((data) => {
         console.log("fetch data: ", data);
 
+        let events = [];
+        Object.entries(data).map(([k, obj], key) => {
+          events.push(obj);
+        });
+        console.log(events);
         setState((prevState) => ({
           ...prevState,
-          events: data
+          events: events
+          //showEvents:
         }));
       });
   }
@@ -42,6 +48,7 @@ function App() {
       },
       enteredTo: new Date(new Date().setDate(new Date().getDate() + 31)),
       events: [],
+      showEvents: 10,
       select: { type: "", period: "next-month" }
     };
   }
@@ -116,7 +123,8 @@ function App() {
     setState((prevState) => ({
       ...prevState,
       range: { from: null, to: null },
-      select: { type: "", period: "" }
+      select: { type: "", period: "" },
+      showEvents: 10
     }));
     //console.log(state);
   }
@@ -124,6 +132,7 @@ function App() {
   function handleSelectType(event) {
     setState((prevState) => ({
       ...prevState,
+      showEvents: 10,
       select: {
         ...prevState.select,
         type: event.target.value
@@ -140,6 +149,7 @@ function App() {
         setState((prevState) => ({
           ...prevState,
           range: { from: null, to: null },
+          showEvents: 10,
           select: {
             ...prevState,
             period: event.target.value
@@ -162,7 +172,8 @@ function App() {
             ...prevState,
             period: event.target.value
           },
-          enteredTo: new Date(new Date().setDate(new Date().getDate() + 7))
+          enteredTo: new Date(new Date().setDate(new Date().getDate() + 7)),
+          showEvents: 10
         }));
         break;
       //////////////////////
@@ -178,7 +189,8 @@ function App() {
             ...prevState,
             period: event.target.value
           },
-          enteredTo: new Date(new Date().setDate(new Date().getDate() + 31))
+          enteredTo: new Date(new Date().setDate(new Date().getDate() + 31)),
+          showEvents: 10
         }));
         break;
       //////////////////////
@@ -188,13 +200,15 @@ function App() {
           ...prevState,
           range: {
             from: new Date(new Date().setHours(0)),
-            to: new Date(new Date().setDate(new Date().getDate() + 180))
+            to: new Date(new Date().setDate(new Date().getDate() + 180)),
+            showEvents: 10
           },
           select: {
             ...prevState,
             period: event.target.value
           },
-          enteredTo: new Date(new Date().setDate(new Date().getDate() + 180))
+          enteredTo: new Date(new Date().setDate(new Date().getDate() + 180)),
+          showEvents: 10
         }));
         break;
       ///////////////////////
@@ -204,7 +218,8 @@ function App() {
           ...prevState,
           range: {
             from: new Date(new Date().setHours(0)),
-            to: new Date(new Date().setDate(new Date().getDate() + 365))
+            to: new Date(new Date().setDate(new Date().getDate() + 365)),
+            showEvents: 10
           },
           select: {
             ...prevState,
@@ -225,7 +240,8 @@ function App() {
             ...prevState,
             period: event.target.value
           },
-          enteredTo: new Date()
+          enteredTo: new Date(),
+          showEvents: 10
         }));
         break;
       //////////////////////
@@ -240,7 +256,8 @@ function App() {
             ...prevState,
             period: event.target.value
           },
-          enteredTo: new Date()
+          enteredTo: new Date(),
+          showEvents: 10
         }));
         break;
       //////////////////////
@@ -256,7 +273,8 @@ function App() {
             ...prevState,
             period: event.target.value
           },
-          enteredTo: new Date()
+          enteredTo: new Date(),
+          showEvents: 10
         }));
         break;
       //////////////////////
@@ -271,7 +289,8 @@ function App() {
             ...prevState,
             period: event.target.value
           },
-          enteredTo: new Date()
+          enteredTo: new Date(),
+          showEvents: 10
         }));
         break;
       //////////////////////
@@ -279,12 +298,23 @@ function App() {
       //console.log("error period");
     }
   }
+
+  function fetchMoreData() {
+    console.log("fetchMoreData", state.showEvents);
+    setTimeout(() => {
+      setState((prevState) => ({
+        ...prevState,
+        showEvents: prevState.showEvents + 10
+      }));
+      //console.log(state);
+    }, 1500);
+  }
   const { range, enteredTo } = state;
   //const modifiers = { start: range.from, end: enteredTo };
   const disabledDays = { before: new Date() }; //state.range.from };
   const selectedDays = [range.from, { from: range.from, to: enteredTo }]; //o: enteredTo }];
 
-  let highlighted = Object.entries(state.events).map(([k, v], key) => {
+  let highlighted = state.events.map((v, key) => {
     if (
       state.select.type === "russoft-events" &&
       Array.isArray(v.category) &&
@@ -311,17 +341,22 @@ function App() {
 
   // Обьекты в диапазоне дат
   let count = 0;
-  let events = [];
-  Object.entries(state.events).map(([k, obj], key) => {
+  let events = state.events;
+  console.log("events1", state.events);
+  // фильтр по Дате
+  events = events.filter((obj) => {
     let ev = new Date(obj.date);
     if (
       (ev > state.range.from && ev < state.range.to) ||
       state.range.from == null
     ) {
-      events.push(obj);
       count++;
+      return true;
     }
+    return false;
   });
+  console.log("filter date", events);
+  console.log("state.select.type", state.select.type);
   // Фильтр наши - не наши мероприятия
   events = events
     .filter((obj) => {
@@ -383,8 +418,13 @@ function App() {
     })
     .reverse();
   console.log("events", events);
-  let listEvents = events.map((v, key) => <EventDiv key={key} event={v} />);
+  console.log("events length", events.length);
+  let listEvents = events
+    .map((v, key) => <EventDiv key={key} event={v} />)
+    .slice(0, state.showEvents);
 
+  console.log("listEvents", listEvents);
+  let hasMore = state.showEvents < count ? true : false;
   //console.log(state);
   return (
     <div>
@@ -435,18 +475,18 @@ function App() {
           </button>
         </div>
       </div>
-      {/*
-      <p>
-        from: {state.range.from == null ? "null" : state.range.from.toString()}
-      </p>
-      <p>to: {state.range.to == null ? "null" : state.range.to.toString()}</p>
-      <p>
-        enteredTo:{" "}
-        {state.enteredTo == null ? "null" : state.enteredTo.toString()}
-      </p>
-      */}
-      <div className="counter">{count} мероприятий</div>
-      <div className="row row_flex">{listEvents}</div>
+
+      <div className="counter">{events.length} мероприятий</div>
+      <div className="row row_flex">
+        <InfiniteScroll
+          dataLength={state.showEvents}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={<h4>Загрузка...</h4>}
+        >
+          {listEvents}
+        </InfiniteScroll>
+      </div>
     </div>
   );
 }
