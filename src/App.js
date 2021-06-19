@@ -5,6 +5,7 @@ import "./styles.css";
 import { WEEKDAYS_SHORT, MONTHS } from "./types";
 import EventDiv from "./components/EventDiv";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { addParamToURL } from "./functions";
 
 function App() {
   const [state, setState] = React.useState(getInitialState());
@@ -41,9 +42,14 @@ function App() {
   }, []);
 
   function getInitialState() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get("from")
+      ? new Date(new Date(Number(urlParams.get("from"))).setHours(0))
+      : new Date(new Date().setHours(0));
+    //addParamToURL("busova", "lohundra2");
     return {
       range: {
-        from: new Date(new Date().setHours(0)),
+        from: from,
         to: new Date(new Date().setDate(new Date().getDate() + 31))
       },
       enteredTo: new Date(new Date().setDate(new Date().getDate() + 31)),
@@ -79,6 +85,8 @@ function App() {
       //return;
       // console.log("first day");
       //console.log(typeof day);
+      addParamToURL("from", day.setHours(0));
+
       setState((prevState) => ({
         ...prevState,
         range: {
@@ -92,6 +100,7 @@ function App() {
         }
       }));
     } else {
+      addParamToURL("to", day.setHours(23, 59, 59));
       //console.log("second click"); // second click
       setState((prevState) => ({
         ...prevState,
@@ -103,7 +112,8 @@ function App() {
           ...prevState.select,
           period: ""
         },
-        enteredTo: day
+        enteredTo: day,
+        showEvents: 10
       }));
     }
   }
@@ -120,6 +130,7 @@ function App() {
   }
 
   function handleResetClick() {
+    addParamToURL();
     setState((prevState) => ({
       ...prevState,
       range: { from: null, to: null },
