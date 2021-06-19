@@ -4,6 +4,7 @@ import "react-day-picker/lib/style.css";
 import "./styles.css";
 import { WEEKDAYS_SHORT, MONTHS } from "./types";
 import EventDiv from "./components/EventDiv";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 function App() {
   const [state, setState] = React.useState(getInitialState());
