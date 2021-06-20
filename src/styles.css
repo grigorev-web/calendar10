@@ -1,9 +1,45 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.DayPicker-Day {
+  border-radius: unset;
+  color: #323753;
+}
+
+.DayPicker-Day--highlighted:not(.DayPicker-Day--outside) {
+  font-weight: 700;
+}
+
+.Range
+  .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+  background-color: #f0f8ff;
+}
+
+.DayPicker-Day--start:not(.DayPicker-Day--outside) {
+  background: #88bfff;
+  border-radius: 25px 0 0 25px;
+}
+
+.DayPicker-Day--end:not(.DayPicker-Day--outside) {
+  background: #88bfff;
+  border-radius: 0 25px 25px 0;
+}
+
+.DayPicker-Day
+  daypicker-day--weekends
+  daypicker-day--start
+  daypicker-day--selected
+  daypicker-day--today {
+  background: #cadef1;
+}
 #root {
   width: 100%;
 }
 .DayPicker {
   display: inline-block;
-  font-size: 1.7rem;
+  font-size: 1.9rem;
   width: 100%;
 }
 
@@ -125,6 +161,7 @@
 .DayPicker-WeekNumber {
   display: table-cell;
   padding: 3px 15px;
+  font-size: 1.7rem;
   vertical-align: middle;
   cursor: pointer;
 }
@@ -160,9 +197,10 @@
 .DayPicker-Day--today:after {
   content: "";
   display: block;
-  width: 100%;
+  width: 20px;
   height: 2px;
   border-bottom: 3px solid #fc7c14;
+  position: absolute;
 }
 .DayPicker-filter__clear-button {
   text-align: right;
@@ -178,8 +216,8 @@
   cursor: default;
 }
 
-.DayPicker-Day--disabled:not(.DayPicker-Day--highlighted) {
-  color: #dce0e0 !important;
+.DayPicker-Day--disabled {
+  color: #dce0e0;
   cursor: default;
 }
 
@@ -191,7 +229,7 @@
   color: #dce0e0;
 }
 
-.DayPicker-Day--selected:not(.DayPicker-Day--outside) {
+.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
   position: relative;
   background-color: #ececec !important;
 }
@@ -234,54 +272,18 @@
   border-radius: 25px !important;
 }
 .DayPicker-Day--highlighted:not(.DayPicker-Day--outside) {
-  /* background: transparent !important; */
+  background: transparent !important;
 }
 
 @media (max-width: 544px) {
   .DayPicker-Months {
     flex-wrap: wrap;
   }
+  .DayPicker-Month + .DayPicker-Month {
+    margin-top: 1em;
+    margin-left: 0;
+  }
   .DayPicker-filter__select select {
     width: 100%;
   }
-}
-.App {
-  font-family: sans-serif;
-  text-align: center;
-}
-
-.DayPicker-Day {
-  border-radius: unset;
-  color: #323753;
-}
-
-.DayPicker-Day--highlighted:not(.DayPicker-Day--outside) {
-  font-weight: 700;
-}
-
-.Range
-  .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
-  background-color: #f0f8ff;
-}
-
-.DayPicker-Day--start:not(.DayPicker-Day--outside) {
-  background: #88bfff;
-  border-radius: 25px 0 0 25px;
-}
-
-.DayPicker-Day--end:not(.DayPicker-Day--outside) {
-  background: #88bfff;
-  border-radius: 0 25px 25px 0;
-}
-
-.DayPicker-Day--weekends {
-  color: #ff9494;
-}
-
-.DayPicker-Day
-  daypicker-day--weekends
-  daypicker-day--start
-  daypicker-day--selected
-  daypicker-day--today {
-  background: #cadef1;
 }

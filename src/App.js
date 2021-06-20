@@ -370,7 +370,6 @@ function App() {
   }
 
   function fetchMoreData() {
-    console.log("fetchMoreData", state.showEvents);
     setTimeout(() => {
       setState((prevState) => ({
         ...prevState,
@@ -384,7 +383,9 @@ function App() {
   //const modifiers = { start: range.from, end: enteredTo };
   const disabledDays = { before: new Date() }; //state.range.from };
   const selectedDays = [range.from, { from: range.from, to: enteredTo }]; //o: enteredTo }];
-
+  /////////////////////////////////////////////////////////
+  // TEST
+  if (state.select.type === "test") alert("test");
   let highlighted = state.events.map((v, key) => {
     if (
       state.select.type === "russoft-events" &&
@@ -516,6 +517,7 @@ function App() {
         <div className="DayPicker-filter__select">
           <select value={state.select.type} onChange={handleSelectType}>
             <option value="all-events">Все мероприятия</option>
+            <option value="тест">Режим разработчика(тест)</option>
             <option value="russoft-events">Мероприятия РУССОФТ</option>
             <option value="partners-events">Мероприятия партнеров</option>
             <option value="company-events">Мероприятия компаний</option>
