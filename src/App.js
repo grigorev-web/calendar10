@@ -43,19 +43,76 @@ function App() {
 
   function getInitialState() {
     const urlParams = new URLSearchParams(window.location.search);
-    const from = urlParams.get("from")
+    //from ------------
+    let from = urlParams.get("from")
       ? new Date(new Date(Number(urlParams.get("from"))).setHours(0))
       : new Date(new Date().setHours(0));
-    //addParamToURL("busova", "lohundra2");
+    // to -----------------------------
+    let to = urlParams.get("to")
+      ? new Date(new Date(Number(urlParams.get("to"))).setHours(23, 59))
+      : new Date(new Date().setDate(new Date().getDate() + 31));
+
+    let period = "";
+    if (!(urlParams.get("from") && urlParams.get("to"))) {
+      if (urlParams.get("period")) {
+        switch (urlParams.get("period")) {
+          case "next-week":
+            period = "next-week";
+            from = new Date(new Date().setHours(0));
+            to = new Date(new Date().setDate(new Date().getDate() + 7));
+            break;
+          case "next-month":
+            period = "next-month";
+            from = new Date(new Date().setHours(0));
+            to = new Date(new Date().setDate(new Date().getDate() + 31));
+            break;
+          case "next-half-year":
+            period = "next-half-year";
+            from = new Date(new Date().setHours(0));
+            to = new Date(new Date().setDate(new Date().getDate() + 180));
+            break;
+          case "next-year":
+            period = "next-year";
+            from = new Date(new Date().setHours(0));
+            to = new Date(new Date().setDate(new Date().getDate() + 365));
+            break;
+          case "last-week":
+            period = "last-week";
+            from = new Date(new Date().setDate(new Date().getDate() - 7));
+            to = new Date(new Date().setHours(23, 59));
+            break;
+          case "last-month":
+            period = "last-month";
+            from = new Date(new Date().setDate(new Date().getDate() - 30));
+            to = new Date(new Date().setHours(23, 59));
+            break;
+          case "last-half-year":
+            period = "last-half-year";
+            from = new Date(new Date().setDate(new Date().getDate() - 182));
+            to = new Date(new Date().setHours(23, 59));
+            break;
+          case "last-year":
+            period = "last-year";
+            from = new Date(new Date().setDate(new Date().getDate() - 365));
+            to = new Date(new Date().setHours(23, 59));
+            break;
+          default:
+            from = null;
+            to = null;
+        }
+      }
+    }
+
+    let type = urlParams.get("type") ? urlParams.get("type") : "";
     return {
       range: {
         from: from,
-        to: new Date(new Date().setDate(new Date().getDate() + 31))
+        to: to
       },
-      enteredTo: new Date(new Date().setDate(new Date().getDate() + 31)),
+      enteredTo: to,
       events: [],
       showEvents: 10,
-      select: { type: "", period: "next-month" }
+      select: { type: type, period: period }
     };
   }
   function isSelectingFirstDay(from, to, day) {
@@ -141,6 +198,7 @@ function App() {
   }
 
   function handleSelectType(event) {
+    addParamToURL("type", event.target.value);
     setState((prevState) => ({
       ...prevState,
       showEvents: 10,
@@ -152,6 +210,7 @@ function App() {
   }
 
   function handleSelectPeriod(event) {
+    addParamToURL("period", event.target.value);
     switch (event.target.value) {
       ////////////////////////
       case "all-period":
@@ -320,6 +379,7 @@ function App() {
       //console.log(state);
     }, 1500);
   }
+  console.log("state", state);
   const { range, enteredTo } = state;
   //const modifiers = { start: range.from, end: enteredTo };
   const disabledDays = { before: new Date() }; //state.range.from };
