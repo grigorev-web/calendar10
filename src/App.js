@@ -100,6 +100,8 @@ function App() {
             from = null;
             to = null;
         }
+      } else {
+        period = "next-month";
       }
     }
 
@@ -185,7 +187,7 @@ function App() {
       }));
     }
   }
-
+  //////////////////////////////////////////////////////////////////////////
   function handleResetClick() {
     addParamToURL();
     setState((prevState) => ({
@@ -196,7 +198,7 @@ function App() {
     }));
     //console.log(state);
   }
-
+  //////////////////////////////////////////////////////////////////////////
   function handleSelectType(event) {
     addParamToURL("type", event.target.value);
     setState((prevState) => ({
@@ -208,7 +210,7 @@ function App() {
       }
     }));
   }
-
+  /////////////////////////////////////////////////////////////////////////////
   function handleSelectPeriod(event) {
     addParamToURL("period", event.target.value);
     switch (event.target.value) {
@@ -427,8 +429,8 @@ function App() {
     }
     return false;
   });
-  console.log("filter date", events);
-  console.log("state.select.type", state.select.type);
+  //console.log("filter date", events);
+  // console.log("state.select.type", state.select.type);
   // Фильтр наши - не наши мероприятия
   events = events
     .filter((obj) => {
@@ -489,8 +491,8 @@ function App() {
       return dateA - dateB; //сортировка по возрастающей дате
     })
     .reverse();
-  console.log("events", events);
-  console.log("events length", events.length);
+  //console.log("events", events);
+  //console.log("events length", events.length);
   let listEvents = events
     .map((v, key) => <EventDiv key={key} event={v} />)
     .slice(0, state.showEvents);
