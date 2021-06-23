@@ -9,7 +9,7 @@ import { addParamToURL } from "./functions";
 
 function App() {
   const [state, setState] = React.useState(getInitialState());
-
+  ////////////////////////////////////////////////////////////////////////////
   function getPosts() {
     var searchParams = new URLSearchParams();
     searchParams.append("from", state.range.from);
@@ -35,12 +35,12 @@ function App() {
         }));
       });
   }
-
+  ////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     //console.log("did mount", state);
     getPosts();
   }, []);
-
+  ////////////////////////////////////////////////////////////////////////////
   function getInitialState() {
     const urlParams = new URLSearchParams(window.location.search);
     //from ------------
@@ -117,6 +117,7 @@ function App() {
       select: { type: type, period: period }
     };
   }
+  /////////////////////////////////////////////////////////////////////////////
   function isSelectingFirstDay(from, to, day) {
     const isBeforeFirstDay = from && DateUtils.isDayBefore(day, from);
     const isRangeSelected = from && to;
@@ -370,7 +371,7 @@ function App() {
       //console.log("error period");
     }
   }
-
+  ///////////////////////////////////////////////////////////////////////////
   function fetchMoreData() {
     setTimeout(() => {
       setState((prevState) => ({
@@ -403,6 +404,13 @@ function App() {
       v.category[0].slug !== "partners-events"
     )
       return null;
+    if (
+      state.select.type === "company-events" &&
+      Array.isArray(v.category) &&
+      v.category.length > 0 &&
+      v.category[0].slug !== "company-events"
+    )
+      return null;
     return new Date(v.date);
   });
 
@@ -419,7 +427,7 @@ function App() {
   console.log("events1", state.events);
   // фильтр по Дате
   events = events.filter((obj) => {
-    let ev = new Date(obj.date);
+    let ev = new Date(new Date(obj.date).setHours(12));
     if (
       (ev > state.range.from && ev < state.range.to) ||
       state.range.from == null
@@ -489,8 +497,20 @@ function App() {
       var dateA = new Date(a.date),
         dateB = new Date(b.date);
       return dateA - dateB; //сортировка по возрастающей дате
-    })
-    .reverse();
+    });
+  /////////////////////////////////////////
+  if (
+    // сначала ближайшие
+    !(
+      state.select.period === "all-period" ||
+      state.select.period === "next-week" ||
+      state.select.period === "next-month" ||
+      state.select.period === "next-half-year" ||
+      state.select.period === "next-year"
+    )
+  ) {
+    events = events.reverse();
+  }
   //console.log("events", events);
   //console.log("events length", events.length);
   let listEvents = events
